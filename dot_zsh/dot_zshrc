@@ -39,7 +39,6 @@ bindkey '^[[B' history-substring-search-down
 unsetopt CORRECT
 unsetopt CORRECT_ALL
 
-[ -f $HOME/.zshrc ] && . $HOME/.zshrc
 [ -f $ZDOTDIR/uname/`uname`.sh ] && . $ZDOTDIR/uname/`uname`.sh
 
 . $ZDOTDIR/aliases.sh
@@ -48,3 +47,5 @@ unsetopt CORRECT_ALL
 . $ZDOTDIR/google-cloud-sdk.sh
 . $ZDOTDIR/zoxide.sh
 . $ZDOTDIR/zshaddhistory.sh
+
+[ -f $HOME/.zshrc ] && . $HOME/.zshrc
