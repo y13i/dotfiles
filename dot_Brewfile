@@ -1,4 +1,3 @@
-brew "dprint"
 brew "eza"
 brew "fzf"
 brew "gh"
