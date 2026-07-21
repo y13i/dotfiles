@@ -1,0 +1,57 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "dprint@0.55.1": {
+      "last_modified": "2026-07-08T21:13:06Z",
+      "resolved": "github:NixOS/nixpkgs/389ed85304b281ca7f306cf8a1eb4378651ca44e#dprint",
+      "source": "devbox-search",
+      "version": "0.55.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/17hk8c9q14yjq7q6hv9pwhlip4ii3rrg-dprint-0.55.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/17hk8c9q14yjq7q6hv9pwhlip4ii3rrg-dprint-0.55.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qr3520yvdz5w48qbs192j16npy8d5rla-dprint-0.55.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qr3520yvdz5w48qbs192j16npy8d5rla-dprint-0.55.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rdx0yrjsbf2hsgzb70l0ir84n29bgzm7-dprint-0.55.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rdx0yrjsbf2hsgzb70l0ir84n29bgzm7-dprint-0.55.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/y9ch9g1zryykc4mycx52zf68rl8w0hm2-dprint-0.55.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/y9ch9g1zryykc4mycx52zf68rl8w0hm2-dprint-0.55.1"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-07-20T13:48:30Z",
+      "resolved": "github:NixOS/nixpkgs/421eebfd0ec7bccd4abe826ce62d7e6e83129493?lastModified=1784555310&narHash=sha256-%2FFCliTPgiuV1owejZFNx3Ch9irdvkOfOFl%2BHHZ%2BDrtM%3D"
+    }
+  }
+}
