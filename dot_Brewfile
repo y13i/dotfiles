@@ -1,4 +1,3 @@
-brew "chezmoi"
 brew "dprint"
 brew "eza"
 brew "fzf"
