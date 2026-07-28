@@ -4,7 +4,7 @@ if [ ! -d $ZSH ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-. $ZDOTDIR/plugins.sh
+source $ZDOTDIR/plugins.sh
 
 # https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="agnoster"
@@ -48,19 +48,19 @@ unsetopt CORRECT_ALL
 
 [ -f $ZDOTDIR/uname/`uname`.sh ] && . $ZDOTDIR/uname/`uname`.sh
 
-. $ZDOTDIR/devbox.sh
-. $ZDOTDIR/eza.sh
-. $ZDOTDIR/fzf.sh
-. $ZDOTDIR/google-cloud-sdk.sh
-. $ZDOTDIR/helm.sh
-. $ZDOTDIR/kubectl.sh
-. $ZDOTDIR/kubectx.sh
-. $ZDOTDIR/pnpm.sh
-. $ZDOTDIR/terraform.sh
-. $ZDOTDIR/zoxide.sh
-. $ZDOTDIR/zshaddhistory.sh
-
 . $ZDOTDIR/_paths.sh
-. $ZDOTDIR/_misc.sh
+source $ZDOTDIR/devbox.sh
+source $ZDOTDIR/eza.sh
+source $ZDOTDIR/fzf.sh
+source $ZDOTDIR/google-cloud-sdk.sh
+source $ZDOTDIR/helm.sh
+source $ZDOTDIR/kubectl.sh
+source $ZDOTDIR/kubectx.sh
+source $ZDOTDIR/pnpm.sh
+source $ZDOTDIR/terraform.sh
+source $ZDOTDIR/zoxide.sh
+source $ZDOTDIR/zshaddhistory.sh
+
+source $ZDOTDIR/_misc.sh
 
 [ -f $HOME/.zshrc ] && . $HOME/.zshrc
