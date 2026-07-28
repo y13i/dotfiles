@@ -1,0 +1,18 @@
+#!/bin/sh
+# Merge chezmoi-managed keys into the existing ~/.claude/settings.json.
+# Keys written ad hoc by Claude Code itself (effortLevel, model, ...) are left untouched so that they don't show up in `chezmoi diff`.
+set -eu
+
+current=$(cat)
+[ -n "$current" ] || current='{}'
+
+printf '%s' "$current" | jq '. * {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 60,
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_FEEDBACK_COMMAND": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  }
+}'
