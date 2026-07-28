@@ -46,9 +46,10 @@ bindkey '^[[B' history-substring-search-down
 unsetopt CORRECT
 unsetopt CORRECT_ALL
 
+source $ZDOTDIR/_paths.sh
+
 [ -f $ZDOTDIR/uname/`uname`.sh ] && . $ZDOTDIR/uname/`uname`.sh
 
-. $ZDOTDIR/_paths.sh
 source $ZDOTDIR/devbox.sh
 source $ZDOTDIR/eza.sh
 source $ZDOTDIR/fzf.sh
