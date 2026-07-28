@@ -38,8 +38,3 @@ alias lf="less +F"
 alias e="eza"
 alias el="eza -l"
 alias ela="eza -la"
-
-alias cz="chezmoi"
-alias czs="chezmoi status"
-alias czd="chezmoi diff"
-alias cza="chezmoi apply"

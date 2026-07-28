@@ -50,6 +50,7 @@ unsetopt CORRECT_ALL
 
 . $ZDOTDIR/aliases.sh
 . $ZDOTDIR/devbox.sh
+. $ZDOTDIR/eza.sh
 . $ZDOTDIR/fzf.sh
 . $ZDOTDIR/google-cloud-sdk.sh
 . $ZDOTDIR/zoxide.sh
