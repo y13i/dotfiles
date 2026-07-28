@@ -55,6 +55,7 @@ unsetopt CORRECT_ALL
 . $ZDOTDIR/google-cloud-sdk.sh
 . $ZDOTDIR/kubectl.sh
 . $ZDOTDIR/kubectx.sh
+. $ZDOTDIR/pnpm.sh
 . $ZDOTDIR/terraform.sh
 . $ZDOTDIR/zoxide.sh
 . $ZDOTDIR/zshaddhistory.sh
