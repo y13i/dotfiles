@@ -48,7 +48,6 @@ unsetopt CORRECT_ALL
 
 [ -f $ZDOTDIR/uname/`uname`.sh ] && . $ZDOTDIR/uname/`uname`.sh
 
-. $ZDOTDIR/aliases.sh
 . $ZDOTDIR/devbox.sh
 . $ZDOTDIR/eza.sh
 . $ZDOTDIR/fzf.sh
@@ -60,5 +59,7 @@ unsetopt CORRECT_ALL
 . $ZDOTDIR/terraform.sh
 . $ZDOTDIR/zoxide.sh
 . $ZDOTDIR/zshaddhistory.sh
+
+. $ZDOTDIR/_misc.sh
 
 [ -f $HOME/.zshrc ] && . $HOME/.zshrc
