@@ -53,6 +53,7 @@ unsetopt CORRECT_ALL
 . $ZDOTDIR/eza.sh
 . $ZDOTDIR/fzf.sh
 . $ZDOTDIR/google-cloud-sdk.sh
+. $ZDOTDIR/helm.sh
 . $ZDOTDIR/kubectl.sh
 . $ZDOTDIR/kubectx.sh
 . $ZDOTDIR/pnpm.sh
