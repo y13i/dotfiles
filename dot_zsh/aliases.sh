@@ -18,10 +18,6 @@ alias ktp="kubectl top pod"
 alias hl="helm ls"
 alias hla="helm ls --all-namespaces"
 
-alias tf="terraform"
-alias tfp="terraform plan"
-alias tfa="terraform apply"
-
 alias p="pnpm"
 alias pi="pnpm install"
 alias pr="pnpm run"
