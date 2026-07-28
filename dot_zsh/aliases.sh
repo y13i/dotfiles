@@ -39,8 +39,6 @@ alias e="eza"
 alias el="eza -l"
 alias ela="eza -la"
 
-alias db="devbox"
-
 alias cz="chezmoi"
 alias czs="chezmoi status"
 alias czd="chezmoi diff"
