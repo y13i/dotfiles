@@ -60,6 +60,7 @@ unsetopt CORRECT_ALL
 . $ZDOTDIR/zoxide.sh
 . $ZDOTDIR/zshaddhistory.sh
 
+. $ZDOTDIR/_paths.sh
 . $ZDOTDIR/_misc.sh
 
 [ -f $HOME/.zshrc ] && . $HOME/.zshrc
