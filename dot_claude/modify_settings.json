@@ -26,6 +26,7 @@ managed=$(
       "mcp__claude_ai_Google_Calendar__list_events",
       "WebFetch(domain:docs.github.com)",
       "WebFetch(domain:github.blog)",
+      "WebFetch(domain:obsidian.md)",
       "WebSearch"
     ],
     "deny": [
