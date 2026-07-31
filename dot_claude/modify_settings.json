@@ -20,10 +20,18 @@ managed=$(
   },
   "permissions": {
     "allow": [
+      "mcp__claude_ai_Gmail__search_threads",
+      "mcp__claude_ai_Gmail__get_thread",
+      "mcp__claude_ai_Gmail__list_drafts",
+      "mcp__claude_ai_Google_Calendar__list_events",
       "WebFetch(domain:docs.github.com)",
-      "WebFetch(domain:github.blog)"
+      "WebFetch(domain:github.blog)",
+      "WebSearch"
     ],
-    "deny": []
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push --force-with-lease:*)"
+    ]
   }
 }
 JSON
