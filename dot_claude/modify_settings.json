@@ -1,12 +1,15 @@
 #!/bin/sh
 # Merge chezmoi-managed keys into the existing ~/.claude/settings.json.
 # Keys written ad hoc by Claude Code itself (effortLevel, model, ...) are left untouched so that they don't show up in `chezmoi diff`.
+# permissions.allow / permissions.deny are unioned with whatever is already there (sorted & deduped) instead of being overwritten.
 set -eu
 
 current=$(cat)
 [ -n "$current" ] || current='{}'
 
-printf '%s' "$current" | jq '. * {
+managed=$(
+  cat <<'JSON'
+{
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "cleanupPeriodDays": 60,
   "env": {
@@ -14,5 +17,23 @@ printf '%s' "$current" | jq '. * {
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_FEEDBACK_COMMAND": "1",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  },
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.github.com)",
+      "WebFetch(domain:github.blog)"
+    ],
+    "deny": []
   }
-}'
+}
+JSON
+)
+
+printf '%s' "$current" | jq --argjson managed "$managed" '
+  def union($a; $b): (($a // []) + ($b // [])) | unique;
+
+  . as $current
+  | ($current * $managed)
+  | .permissions.allow = union($current.permissions.allow; $managed.permissions.allow)
+  | .permissions.deny  = union($current.permissions.deny;  $managed.permissions.deny)
+'
