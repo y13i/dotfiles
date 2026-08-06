@@ -27,6 +27,7 @@ managed=$(
       "WebFetch(domain:docs.github.com)",
       "WebFetch(domain:github.blog)",
       "WebFetch(domain:obsidian.md)",
+      "WebFetch(domain:help.obsidian.md)",
       "WebSearch"
     ],
     "deny": [
