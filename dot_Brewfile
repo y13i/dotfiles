@@ -8,12 +8,12 @@ brew "kubernetes-cli"
 brew "krew"
 brew "kubectx"
 brew "nmap"
-brew "1password-cli"
 brew "sl"
 brew "tmux"
 brew "tree"
 brew "zoxide"
 
+cask "1password-cli"
 cask "aws-vault-binary"
 cask "unnaturalscrollwheels"
 
