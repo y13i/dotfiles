@@ -1,33 +1,39 @@
 #!/usr/bin/env bash
 # Sync the accounts and roles visible in IAM Identity Center into ~/.aws/config
-# as "<account>/<role>" profiles. Generated profiles live between BEGIN/END
-# markers so re-running replaces them without touching anything else.
+# as "<account>/<role>" profiles. Each sso-session gets its own block between
+# BEGIN/END markers so re-running replaces them without touching anything else.
 set -euo pipefail
 
 usage() {
   cat <<EOF
 Usage: $(basename "$0") [options]
 
+Without --session or --start-url, every sso-session in the config is synced.
+
 Options:
-  --session NAME       sso-session name (default: the only one in config, or
-                       derived from --start-url)
+  --session NAME       sync only this sso-session (default: derived from
+                       --start-url, else all sso-sessions)
   --start-url URL      access portal URL; creates the sso-session if missing
   --sso-region REGION  region the Identity Center instance lives in, which may
                        differ from where workloads run (required with
                        --start-url; a wrong one fails as "Invalid start url")
   --region REGION      default region for generated profiles (default: the
                        one used last time, else the Identity Center region)
-  --dry-run            print the generated block instead of writing it
+  --prefix PREFIX      prepend PREFIX to this session's profile names, e.g.
+                       "corp-" for "corp-<account>/<role>"; remembered for
+                       later runs ("" clears it)
+  --dry-run            print the generated blocks instead of writing them
   -h, --help           show this help
 
 Examples:
-  $(basename "$0") --start-url https://example.awsapps.com/start --sso-region ap-northeast-1
-  $(basename "$0")   # re-sync after accounts or roles change
+  $(basename "$0") --start-url https://example.awsapps.com/start --sso-region us-east-1
+  $(basename "$0") --start-url https://other.awsapps.com/start --sso-region us-east-1 --prefix other-
+  $(basename "$0")   # re-sync all sessions after accounts or roles change
 EOF
 }
 
 config="${AWS_CONFIG_FILE:-$HOME/.aws/config}"
-session="" start_url="" sso_region="" region="" dry_run=false
+session="" start_url="" sso_region="" region="" prefix="" prefix_set=false dry_run=false
 
 while (($#)); do
   case "$1" in
@@ -35,6 +41,7 @@ while (($#)); do
     --start-url) start_url="$2"; shift 2 ;;
     --sso-region) sso_region="$2"; shift 2 ;;
     --region) region="$2"; shift 2 ;;
+    --prefix) prefix="$2" prefix_set=true; shift 2 ;;
     --dry-run) dry_run=true; shift ;;
     -h | --help) usage; exit 0 ;;
     *) echo "unknown option: $1" >&2; usage >&2; exit 2 ;;
@@ -44,6 +51,8 @@ done
 export AWS_PAGER=""
 mkdir -p "$(dirname "$config")"
 touch "$config"
+tmp_block="$(mktemp)" tmp_config="$(mktemp)"
+trap 'rm -f "$tmp_block" "$tmp_config"' EXIT
 
 # ini_get SECTION KEY: print KEY's value in [SECTION] of the config.
 ini_get() {
@@ -62,8 +71,6 @@ ini_get() {
 
 # ini_set SECTION KEY VALUE: replace KEY's value in [SECTION] of the config.
 ini_set() {
-  local tmp
-  tmp="$(mktemp)"
   awk -v sec="$1" -v key="$2" -v val="$3" '
     /^[[:space:]]*\[/ {
       s = $0; gsub(/^[[:space:]]*\[[[:space:]]*|[[:space:]]*\][[:space:]]*$/, "", s)
@@ -74,9 +81,157 @@ ini_set() {
       if (k == key) { print key " = " val; next }
     }
     { print }
-  ' "$config" >"$tmp"
-  cat "$tmp" >"$config"
-  rm -f "$tmp"
+  ' "$config" >"$tmp_config"
+  cat "$tmp_config" >"$config"
+}
+
+# block_get BEGIN END REGEX: print the rest of the first line inside the
+# generated block that matches REGEX, with the match removed.
+block_get() {
+  awk -v b="$1" -v e="$2" -v re="$3" '
+    $0 == b { inb = 1; next } $0 == e { exit }
+    inb && $0 ~ re { sub(re, ""); print; exit }
+  ' "$config"
+}
+
+# ensure_session SESSION: create the sso-session, or update it from the
+# --start-url/--sso-region options.
+ensure_session() {
+  local s="$1" kv key val
+  if [[ -z $(ini_get "sso-session $s" sso_start_url) ]]; then
+    if [[ -z $start_url || -z $sso_region ]]; then
+      echo "sso-session '$s' not found; pass --start-url and --sso-region to create it" >&2
+      exit 2
+    fi
+    [[ -s $config && -n $(tail -c 1 "$config") ]] && echo >>"$config"
+    cat >>"$config" <<EOF
+
+[sso-session $s]
+sso_start_url = $start_url
+sso_region = $sso_region
+sso_registration_scopes = sso:account:access
+EOF
+    echo "added [sso-session $s] to $config" >&2
+    return
+  fi
+  for kv in "sso_start_url=$start_url" "sso_region=$sso_region"; do
+    key="${kv%%=*}" val="${kv#*=}"
+    if [[ -n $val && $val != "$(ini_get "sso-session $s" "$key")" ]]; then
+      ini_set "sso-session $s" "$key" "$val"
+      echo "updated $key of [sso-session $s] to $val" >&2
+    fi
+  done
+}
+
+# sync_session SESSION: regenerate the block of profiles for SESSION.
+sync_session() {
+  local s="$1" s_region s_prefix sso_reg token_file token accounts rows n i id name roles role
+  local begin end manual result block count
+  sso_reg="$(ini_get "sso-session $s" sso_region)"
+  begin="# BEGIN aws-sso-sync: $s (generated; edits inside this block are overwritten)"
+  end="# END aws-sso-sync: $s"
+
+  s_region="${region:-$(block_get "$begin" "$end" '^[[:space:]]*region[[:space:]]*=[[:space:]]*')}"
+  s_region="${s_region:-$sso_reg}"
+  if $prefix_set; then
+    s_prefix="$prefix"
+  else
+    s_prefix="$(block_get "$begin" "$end" '^# prefix: ')"
+  fi
+
+  # The CLI caches sso-session tokens under the SHA-1 of the session name.
+  token_file="$HOME/.aws/sso/cache/$(printf %s "$s" | shasum -a 1 | cut -d' ' -f1).json"
+  read_token() {
+    [[ -f $token_file ]] || return 0
+    jq -r --arg now "$(date -u +%Y-%m-%dT%H:%M:%S)" \
+      'select(.expiresAt[0:19] > $now) | .accessToken // empty' "$token_file"
+  }
+  token="$(read_token)"
+  if [[ -z $token ]]; then
+    aws sso login --sso-session "$s" </dev/null >&2
+    token="$(read_token)"
+    [[ -n $token ]] || { echo "could not read SSO token from $token_file" >&2; exit 1; }
+  fi
+
+  accounts="$(aws sso list-accounts --access-token "$token" --region "$sso_reg" --output json |
+    jq -r '.accountList[] | [.accountId, .accountName] | @tsv')"
+  [[ -n $accounts ]] || { echo "[$s] no accounts visible to this user" >&2; return; }
+
+  rows=""
+  n="$(grep -c . <<<"$accounts")" i=0
+  while IFS=$'\t' read -r id name; do
+    i=$((i + 1))
+    printf '\r\033[K[%s %d/%d] %s' "$s" "$i" "$n" "$name" >&2
+    roles="$(aws sso list-account-roles --access-token "$token" --region "$sso_reg" \
+      --account-id "$id" --output json </dev/null | jq -r '.roleList[].roleName')"
+    while read -r role; do
+      [[ -n $role ]] && rows+="$id"$'\t'"$name"$'\t'"$role"$'\n'
+    done <<<"$roles"
+  done <<<"$accounts"
+  printf '\r\033[K' >&2
+
+  # Profiles defined outside this block (by hand or by another sso-session's
+  # block) take precedence.
+  manual="$(awk -v b="$begin" -v e="$end" '
+    $0 == b { skip = 1; next } $0 == e { skip = 0; next } skip { next }
+    /^[[:space:]]*\[[[:space:]]*profile[[:space:]]/ {
+      gsub(/^[[:space:]]*\[[[:space:]]*profile[[:space:]]+|[[:space:]]*\][[:space:]]*$/, ""); print
+    }
+  ' "$config")"
+
+  result="$(printf %s "$rows" | jq -Rs \
+    --arg session "$s" --arg region "$s_region" --arg prefix "$s_prefix" \
+    --arg begin "$begin" --arg end "$end" --arg manual "$manual" '
+    ($manual | split("\n") | map(select(. != ""))) as $manual
+    | split("\n") | map(select(. != "") | split("\t") | {id: .[0], name: .[1], role: .[2]})
+    # Characters that break ini section headers or shell usage become "-".
+    | map(.acct = (.name | gsub("[\\s\\[\\]/]+"; "-")))
+    # Disambiguate accounts that share a display name.
+    | (group_by(.acct) | map(select(map(.id) | unique | length > 1) | .[0].acct)) as $dups
+    | map(if (.acct | IN($dups[])) then .acct += "-\(.id)" else . end)
+    | map(.profile = "\($prefix)\(.acct)/\(.role)")
+    | sort_by(.profile | ascii_downcase)
+    | {
+        skipped: map(select(.profile | IN($manual[])) | .profile),
+        block: (
+          [$begin]
+          + (if $prefix == "" then [] else ["# prefix: \($prefix)"] end)
+          + map(select(.profile | IN($manual[]) | not)
+              | "[profile \(.profile)]\nsso_session = \($session)\nsso_account_id = \(.id)\nsso_role_name = \(.role)\nregion = \($region)\n")
+          + [$end]
+          | join("\n")
+        )
+      }
+  ')"
+  block="$(jq -r .block <<<"$result")"
+  count="$(grep -c '^\[profile ' <<<"$block" || true)"
+
+  if [[ $(jq '.skipped | length' <<<"$result") -gt 0 ]]; then
+    echo "[$s] skipped profiles already defined elsewhere (use --prefix to avoid clashes):" >&2
+    jq -r '.skipped[] | "  " + .' <<<"$result" >&2
+  fi
+
+  if $dry_run; then
+    printf '%s\n' "$block"
+    echo "[$s] $count profiles (dry run, nothing written)" >&2
+    return
+  fi
+
+  printf '%s\n' "$block" >"$tmp_block"
+  awk -v b="$begin" -v e="$end" -v f="$tmp_block" '
+    $0 == b { while ((getline l < f) > 0) print l; skip = 1; done = 1; next }
+    skip { if ($0 == e) skip = 0; next }
+    { print }
+    END { if (!done) { print ""; while ((getline l < f) > 0) print l } }
+  ' "$config" >"$tmp_config"
+
+  if cmp -s "$config" "$tmp_config"; then
+    echo "[$s] already up to date ($count profiles)" >&2
+    return
+  fi
+  cp -p "$config" "$config.bak"
+  cat "$tmp_config" >"$config"
+  echo "[$s] wrote $count profiles to $config (backup: $config.bak)" >&2
 }
 
 # The portal URL copied from a browser often has "/" or "#/..." appended,
@@ -84,135 +239,26 @@ ini_set() {
 start_url="${start_url%%#*}"
 start_url="${start_url%/}"
 
-if [[ -z $session ]]; then
-  if [[ -n $start_url ]]; then
-    # https://my-org.awsapps.com/start -> my-org
-    session="$(sed -E 's#^https?://([^./]+).*#\1#' <<<"$start_url")"
-  else
-    sessions="$(sed -nE 's/^[[:space:]]*\[[[:space:]]*sso-session[[:space:]]+([^]]+[^][:space:]])[[:space:]]*\].*/\1/p' "$config")"
-    if [[ $(grep -c . <<<"$sessions") -ne 1 ]]; then
-      echo "specify --session (found: ${sessions:-none}), or --start-url to create one" >&2
-      exit 2
-    fi
-    session="$sessions"
-  fi
+if [[ -z $session && -n $start_url ]]; then
+  # https://my-org.awsapps.com/start -> my-org
+  session="$(sed -E 's#^https?://([^./]+).*#\1#' <<<"$start_url")"
 fi
 
-if [[ -z $(ini_get "sso-session $session" sso_start_url) ]]; then
-  if [[ -z $start_url || -z $sso_region ]]; then
-    echo "sso-session '$session' not found; pass --start-url and --sso-region to create it" >&2
-    exit 2
-  fi
-  [[ -s $config && -n $(tail -c 1 "$config") ]] && echo >>"$config"
-  cat >>"$config" <<EOF
-
-[sso-session $session]
-sso_start_url = $start_url
-sso_region = $sso_region
-sso_registration_scopes = sso:account:access
-EOF
-  echo "added [sso-session $session] to $config" >&2
-else
-  for kv in "sso_start_url=$start_url" "sso_region=$sso_region"; do
-    key="${kv%%=*}" val="${kv#*=}"
-    if [[ -n $val && $val != "$(ini_get "sso-session $session" "$key")" ]]; then
-      ini_set "sso-session $session" "$key" "$val"
-      echo "updated $key of [sso-session $session] to $val" >&2
-    fi
-  done
-fi
-sso_region="$(ini_get "sso-session $session" sso_region)"
-
-begin="# BEGIN aws-sso-sync: $session (generated; edits inside this block are overwritten)"
-end="# END aws-sso-sync: $session"
-
-if [[ -z $region ]]; then
-  region="$(awk -v b="$begin" -v e="$end" '
-    $0 == b { inb = 1; next } $0 == e { exit }
-    inb && /^[[:space:]]*region[[:space:]]*=/ { sub(/^[^=]*=[[:space:]]*/, ""); print; exit }
-  ' "$config")"
-  region="${region:-$sso_region}"
-fi
-
-# The CLI caches sso-session tokens under the SHA-1 of the session name.
-token_file="$HOME/.aws/sso/cache/$(printf %s "$session" | shasum -a 1 | cut -d' ' -f1).json"
-read_token() {
-  [[ -f $token_file ]] || return 0
-  jq -r --arg now "$(date -u +%Y-%m-%dT%H:%M:%S)" \
-    'select(.expiresAt[0:19] > $now) | .accessToken // empty' "$token_file"
-}
-token="$(read_token)"
-if [[ -z $token ]]; then
-  aws sso login --sso-session "$session" >&2
-  token="$(read_token)"
-  [[ -n $token ]] || { echo "could not read SSO token from $token_file" >&2; exit 1; }
-fi
-
-accounts="$(aws sso list-accounts --access-token "$token" --region "$sso_region" --output json |
-  jq -r '.accountList[] | [.accountId, .accountName] | @tsv')"
-[[ -n $accounts ]] || { echo "no accounts visible to this user" >&2; exit 1; }
-
-rows=""
-n="$(grep -c . <<<"$accounts")" i=0
-while IFS=$'\t' read -r id name; do
-  i=$((i + 1))
-  printf '\r\033[K[%d/%d] %s' "$i" "$n" "$name" >&2
-  roles="$(aws sso list-account-roles --access-token "$token" --region "$sso_region" \
-    --account-id "$id" --output json | jq -r '.roleList[].roleName')"
-  while read -r role; do
-    [[ -n $role ]] && rows+="$id"$'\t'"$name"$'\t'"$role"$'\n'
-  done <<<"$roles"
-done <<<"$accounts"
-printf '\r\033[K' >&2
-
-# Profiles defined by hand outside the generated block take precedence.
-manual="$(awk -v b="$begin" -v e="$end" '
-  $0 == b { skip = 1; next } $0 == e { skip = 0; next } skip { next }
-  /^[[:space:]]*\[[[:space:]]*profile[[:space:]]/ {
-    s = $0; gsub(/^[[:space:]]*\[[[:space:]]*profile[[:space:]]+|[[:space:]]*\][[:space:]]*$/, ""); print
-  }
-' "$config")"
-
-block="$(printf %s "$rows" | jq -rRs \
-  --arg session "$session" --arg region "$region" --arg begin "$begin" --arg end "$end" \
-  --arg manual "$manual" '
-  ($manual | split("\n") | map(select(. != ""))) as $manual
-  | split("\n") | map(select(. != "") | split("\t") | {id: .[0], name: .[1], role: .[2]})
-  # Characters that break ini section headers or shell usage become "-".
-  | map(.acct = (.name | gsub("[\\s\\[\\]/]+"; "-")))
-  # Disambiguate accounts that share a display name.
-  | (group_by(.acct) | map(select(map(.id) | unique | length > 1) | .[0].acct)) as $dups
-  | map(if (.acct | IN($dups[])) then .acct += "-\(.id)" else . end)
-  | map(.profile = "\(.acct)/\(.role)" | select(.profile | IN($manual[]) | not))
-  | sort_by(.profile | ascii_downcase)
-  | [$begin]
-    + map("[profile \(.profile)]\nsso_session = \($session)\nsso_account_id = \(.id)\nsso_role_name = \(.role)\nregion = \($region)\n")
-    + [$end]
-  | join("\n")
-')"
-
-count="$(grep -c '^\[profile ' <<<"$block" || true)"
-
-if $dry_run; then
-  printf '%s\n' "$block"
-  echo "($count profiles; dry run, nothing written)" >&2
+if [[ -n $session ]]; then
+  ensure_session "$session"
+  sync_session "$session"
   exit 0
 fi
 
-tmp_block="$(mktemp)" tmp_config="$(mktemp)"
-trap 'rm -f "$tmp_block" "$tmp_config"' EXIT
-printf '%s\n' "$block" >"$tmp_block"
-awk -v b="$begin" -v e="$end" -v f="$tmp_block" '
-  $0 == b { while ((getline l < f) > 0) print l; skip = 1; done = 1; next }
-  skip { if ($0 == e) skip = 0; next }
-  { print }
-  END { if (!done) { print ""; while ((getline l < f) > 0) print l } }
-' "$config" >"$tmp_config"
-
-if cmp -s "$config" "$tmp_config"; then
-  echo "$config is already up to date ($count profiles)" >&2
-  exit 0
+if [[ -n $sso_region || -n $region ]] || $prefix_set; then
+  echo "--sso-region, --region and --prefix need --session or --start-url" >&2
+  exit 2
 fi
-cp -p "$config" "$config.bak"
-cat "$tmp_config" >"$config"
-echo "wrote $count profiles for sso-session '$session' to $config (backup: $config.bak)" >&2
+sessions="$(sed -nE 's/^[[:space:]]*\[[[:space:]]*sso-session[[:space:]]+([^]]+[^][:space:]])[[:space:]]*\].*/\1/p' "$config")"
+if [[ -z $sessions ]]; then
+  echo "no sso-session in $config; pass --start-url and --sso-region to create one" >&2
+  exit 2
+fi
+while read -r s <&3; do
+  sync_session "$s"
+done 3<<<"$sessions"
