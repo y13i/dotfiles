@@ -16,6 +16,7 @@ brew "zoxide"
 cask "1password-cli"
 cask "aws-vault-binary"
 cask "claude-code"
+cask "openlens"
 cask "unnaturalscrollwheels"
 
 krew "ktop"
