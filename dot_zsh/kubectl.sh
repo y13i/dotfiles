@@ -9,3 +9,5 @@ alias kdk="kubectl diff --kustomize"
 alias krr="kubectl rollout restart"
 alias ktn="kubectl top node"
 alias ktp="kubectl top pod"
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
