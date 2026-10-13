@@ -21,6 +21,7 @@ cask "unnaturalscrollwheels"
 
 krew "ktop"
 krew "neat"
+krew "resource-capacity"
 krew "view-allocations"
 
 tap "derailed/k9s"
