@@ -1,51 +1,41 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "chezmoi@2.70.5": {
-      "last_modified": "2026-07-08T21:13:06Z",
-      "resolved": "github:NixOS/nixpkgs/389ed85304b281ca7f306cf8a1eb4378651ca44e#chezmoi",
+    "chezmoi@2.73.0": {
+      "last_modified": "2026-10-08T19:21:32Z",
+      "resolved": "github:NixOS/nixpkgs/8edc0c72e3a38faf5434e40d1f19431125fe4b30#chezmoi",
       "source": "devbox-search",
-      "version": "2.70.5",
+      "version": "2.73.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/yxjjblfa9ky5bmwdg0ph90m2f8j95bim-chezmoi-2.70.5",
+              "path": "/nix/store/yd2kaby1a5b5lii0h9zmhk8rnnylli2x-chezmoi-2.73.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/yxjjblfa9ky5bmwdg0ph90m2f8j95bim-chezmoi-2.70.5"
+          "store_path": "/nix/store/yd2kaby1a5b5lii0h9zmhk8rnnylli2x-chezmoi-2.73.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/ggr9f56ls49ld8qb05hnhjcc4gyrsri1-chezmoi-2.70.5",
+              "path": "/nix/store/5gc42dq5nvhsgfr1cj4dhb7cm7sa7lcp-chezmoi-2.73.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/ggr9f56ls49ld8qb05hnhjcc4gyrsri1-chezmoi-2.70.5"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/hvkf6dw4rsizz0s75yn9ckygz0m4mdnq-chezmoi-2.70.5",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/hvkf6dw4rsizz0s75yn9ckygz0m4mdnq-chezmoi-2.70.5"
+          "store_path": "/nix/store/5gc42dq5nvhsgfr1cj4dhb7cm7sa7lcp-chezmoi-2.73.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/y5q3zccr8nfcq98hazzkbc4spbswanb0-chezmoi-2.70.5",
+              "path": "/nix/store/apalglns7ybpr4i5g76azqi767pdsdfb-chezmoi-2.73.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/y5q3zccr8nfcq98hazzkbc4spbswanb0-chezmoi-2.70.5"
+          "store_path": "/nix/store/apalglns7ybpr4i5g76azqi767pdsdfb-chezmoi-2.73.0"
         }
       }
     },
