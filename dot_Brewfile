@@ -17,6 +17,7 @@ cask "1password-cli"
 cask "aws-vault-binary"
 cask "claude-code"
 cask "dbeaver-community"
+cask "keepingyouawake"
 cask "openlens"
 cask "unnaturalscrollwheels"
 
