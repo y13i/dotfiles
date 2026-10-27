@@ -12,3 +12,7 @@ The user may use both English and Japanese. **Always respond in the same languag
 ## Tools
 
 The user tends to use [Devbox](https://www.jetify.com/devbox). If you find the requred tools not installed, try using Devbox to check if it is installed.
+
+## Memory
+
+Auto memory is disabled. When you would otherwise save a memory, output it in the chat instead, prefixed with "📝 Memory candidate:", so the user can decide whether to add it to CLAUDE.md or other docs.
