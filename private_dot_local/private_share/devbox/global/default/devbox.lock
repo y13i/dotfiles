@@ -1,51 +1,41 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "dprint@0.55.1": {
-      "last_modified": "2026-07-08T21:13:06Z",
-      "resolved": "github:NixOS/nixpkgs/389ed85304b281ca7f306cf8a1eb4378651ca44e#dprint",
+    "dprint@0.64.1": {
+      "last_modified": "2026-10-24T11:44:37Z",
+      "resolved": "github:NixOS/nixpkgs/d3b13ad75cc492690728f9307e443dec9ef9a20e#dprint",
       "source": "devbox-search",
-      "version": "0.55.1",
+      "version": "0.64.1",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/17hk8c9q14yjq7q6hv9pwhlip4ii3rrg-dprint-0.55.1",
+              "path": "/nix/store/7fsfx09vkf5jshrfi81fh8r3bc32apmc-dprint-0.64.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/17hk8c9q14yjq7q6hv9pwhlip4ii3rrg-dprint-0.55.1"
+          "store_path": "/nix/store/7fsfx09vkf5jshrfi81fh8r3bc32apmc-dprint-0.64.1"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/qr3520yvdz5w48qbs192j16npy8d5rla-dprint-0.55.1",
+              "path": "/nix/store/s6n4vmh5v96bn9i6k1752166zjjvpjcy-dprint-0.64.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/qr3520yvdz5w48qbs192j16npy8d5rla-dprint-0.55.1"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/rdx0yrjsbf2hsgzb70l0ir84n29bgzm7-dprint-0.55.1",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/rdx0yrjsbf2hsgzb70l0ir84n29bgzm7-dprint-0.55.1"
+          "store_path": "/nix/store/s6n4vmh5v96bn9i6k1752166zjjvpjcy-dprint-0.64.1"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/y9ch9g1zryykc4mycx52zf68rl8w0hm2-dprint-0.55.1",
+              "path": "/nix/store/hf75njpkr5fw5kzv75mzbi4lgallzr8z-dprint-0.64.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/y9ch9g1zryykc4mycx52zf68rl8w0hm2-dprint-0.55.1"
+          "store_path": "/nix/store/hf75njpkr5fw5kzv75mzbi4lgallzr8z-dprint-0.64.1"
         }
       }
     },
