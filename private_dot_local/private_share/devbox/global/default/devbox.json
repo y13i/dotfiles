@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
   "packages": [
     "dprint@0.55.1",
-    "trufflehog@3.95.9"
+    "trufflehog@3.99.7"
   ]
 }
