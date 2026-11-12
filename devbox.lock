@@ -1,41 +1,41 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "chezmoi@2.73.3": {
-      "last_modified": "2026-11-01T00:57:29Z",
-      "resolved": "github:NixOS/nixpkgs/d357a2b54f0b6dc4aeb4e993190a52cf151b6f24#chezmoi",
+    "chezmoi@2.74.1": {
+      "last_modified": "2026-11-11T14:42:58Z",
+      "resolved": "github:NixOS/nixpkgs/9397dcb09c9598a33509fbc0cce699bd4e6c84d5#chezmoi",
       "source": "devbox-search",
-      "version": "2.73.3",
+      "version": "2.74.1",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/i0h0rnf45a1v1hbpmygf3j0sxnbalbjp-chezmoi-2.73.3",
+              "path": "/nix/store/w1yi7h1h2v6fdbg19v6l8ibrxpdcijma-chezmoi-2.74.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/i0h0rnf45a1v1hbpmygf3j0sxnbalbjp-chezmoi-2.73.3"
+          "store_path": "/nix/store/w1yi7h1h2v6fdbg19v6l8ibrxpdcijma-chezmoi-2.74.1"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/ggzsbnszm4mayfxdmska0d4k0ywcrls4-chezmoi-2.73.3",
+              "path": "/nix/store/1is431rpsbcp3c8lcxi6w1s1pzwgqj7h-chezmoi-2.74.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/ggzsbnszm4mayfxdmska0d4k0ywcrls4-chezmoi-2.73.3"
+          "store_path": "/nix/store/1is431rpsbcp3c8lcxi6w1s1pzwgqj7h-chezmoi-2.74.1"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/48d807ywysiz1ir0wagqwj7nsvqq4002-chezmoi-2.73.3",
+              "path": "/nix/store/sd5kdikqvcdlrs6v3xj1jw13nl05wd2i-chezmoi-2.74.1",
               "default": true
             }
           ],
-          "store_path": "/nix/store/48d807ywysiz1ir0wagqwj7nsvqq4002-chezmoi-2.73.3"
+          "store_path": "/nix/store/sd5kdikqvcdlrs6v3xj1jw13nl05wd2i-chezmoi-2.74.1"
         }
       }
     },
