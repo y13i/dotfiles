@@ -43,41 +43,41 @@
       "last_modified": "2026-11-03T11:44:38Z",
       "resolved": "github:NixOS/nixpkgs/ea9e3ef341e11c193537f674f821a99f9f436729?lastModified=1793706278&narHash=sha256-CE1GD35mj%2F%2FAKYuLNbQJZDelQYWzef5GBpQno9uyNP0%3D"
     },
-    "trufflehog@3.99.8": {
-      "last_modified": "2026-11-03T03:15:56Z",
-      "resolved": "github:NixOS/nixpkgs/9a6cbf4722bdbbef65f9e0400452ca088e31dc4b#trufflehog",
+    "trufflehog@3.99.9": {
+      "last_modified": "2026-11-14T08:26:23Z",
+      "resolved": "github:NixOS/nixpkgs/5d2b81a7a3be3e2f832879028e4d60abbf58e9a0#trufflehog",
       "source": "devbox-search",
-      "version": "3.99.8",
+      "version": "3.99.9",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/4zxa4lhwq6wq0gd0c4wzmg1nrlij1y5m-trufflehog-3.99.8",
+              "path": "/nix/store/af5ym3jrql7llpdj4xhzszmsw19jb4gj-trufflehog-3.99.9",
               "default": true
             }
           ],
-          "store_path": "/nix/store/4zxa4lhwq6wq0gd0c4wzmg1nrlij1y5m-trufflehog-3.99.8"
+          "store_path": "/nix/store/af5ym3jrql7llpdj4xhzszmsw19jb4gj-trufflehog-3.99.9"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/dvz1m6wbyrjs4vwrvcw1q4vy7d2xxl6s-trufflehog-3.99.8",
+              "path": "/nix/store/0yvy3k9z7a66nqy2i17iap0rskvjs724-trufflehog-3.99.9",
               "default": true
             }
           ],
-          "store_path": "/nix/store/dvz1m6wbyrjs4vwrvcw1q4vy7d2xxl6s-trufflehog-3.99.8"
+          "store_path": "/nix/store/0yvy3k9z7a66nqy2i17iap0rskvjs724-trufflehog-3.99.9"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/8f4y3kd30mxwzcimn4hjl3cajk711dyd-trufflehog-3.99.8",
+              "path": "/nix/store/03l52zlc8zhq5gbxhydbqwykx8265is9-trufflehog-3.99.9",
               "default": true
             }
           ],
-          "store_path": "/nix/store/8f4y3kd30mxwzcimn4hjl3cajk711dyd-trufflehog-3.99.8"
+          "store_path": "/nix/store/03l52zlc8zhq5gbxhydbqwykx8265is9-trufflehog-3.99.9"
         }
       }
     }
