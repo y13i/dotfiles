@@ -22,6 +22,7 @@ cask "dbeaver-community"
 cask "keepingyouawake"
 cask "openlens"
 cask "unnaturalscrollwheels"
+cask "zed"
 
 krew "ktop"
 krew "neat"

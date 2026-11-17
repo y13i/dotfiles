@@ -8,7 +8,8 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "minimap": {
-    "show": "auto"
+    "thumb_border": "none",
+    "show": "always"
   },
   "agent_servers": {
     "claude-acp": {

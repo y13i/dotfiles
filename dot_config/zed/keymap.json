@@ -24,5 +24,10 @@
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
       "ctrl-tab": "pane::ActivateNextItem"
     }
+  },
+  {
+    "bindings": {
+      "cmd-`": "workspace::NewCenterTerminal"
+    }
   }
 ]
