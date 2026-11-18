@@ -17,7 +17,8 @@
     }
   },
   "terminal": {
-    "font_family": "Cascadia Code NF"
+    "font_family": "Cascadia Code NF",
+    "copy_on_select": true
   },
   "cli_default_open_behavior": "new_window",
   "base_keymap": "VSCode",
