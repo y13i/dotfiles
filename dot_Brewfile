@@ -23,6 +23,7 @@ cask "keepingyouawake"
 cask "openlens"
 cask "unnaturalscrollwheels"
 cask "zed"
+cask "zed-delta"
 
 krew "ktop"
 krew "neat"
