@@ -5,3 +5,4 @@ if command -v devbox &>/dev/null; then eval "$(devbox global shellenv --init-hoo
 alias db="devbox"
 alias dba="devbox add"
 alias dbl="devbox list"
+alias dbs="devbox shell"
