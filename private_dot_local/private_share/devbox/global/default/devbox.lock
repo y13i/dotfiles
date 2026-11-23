@@ -2,8 +2,8 @@
   "lockfile_version": "1",
   "packages": {
     "dprint@0.64.3": {
-      "last_modified": "2026-11-03T19:55:20Z",
-      "resolved": "github:NixOS/nixpkgs/9d3b8db48266c17be0b5f9c6360c3ecfbac3d1f5#dprint",
+      "last_modified": "2026-11-21T08:18:15Z",
+      "resolved": "github:NixOS/nixpkgs/93a9ed0a866099a230ed5146a5bb7d16fd5c9b14#dprint",
       "source": "devbox-search",
       "version": "0.64.3",
       "systems": {
@@ -11,37 +11,37 @@
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/7lxfj9b0l18rcfdc5diczgg6s75d50pr-dprint-0.64.3",
+              "path": "/nix/store/wycikjiajq08bg3b3073bfp4xrsxlvj4-dprint-0.64.3",
               "default": true
             }
           ],
-          "store_path": "/nix/store/7lxfj9b0l18rcfdc5diczgg6s75d50pr-dprint-0.64.3"
+          "store_path": "/nix/store/wycikjiajq08bg3b3073bfp4xrsxlvj4-dprint-0.64.3"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/0a6z2llpgpzflfqnylcxj58x0wc235ad-dprint-0.64.3",
+              "path": "/nix/store/a61h5rxkg2jirwsirx55zhcy7hfagnn1-dprint-0.64.3",
               "default": true
             }
           ],
-          "store_path": "/nix/store/0a6z2llpgpzflfqnylcxj58x0wc235ad-dprint-0.64.3"
+          "store_path": "/nix/store/a61h5rxkg2jirwsirx55zhcy7hfagnn1-dprint-0.64.3"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/kvqsz0bixydbyhkdkjs73zx9vqnjpzls-dprint-0.64.3",
+              "path": "/nix/store/d5a6kni8amzxxi9dhig21aqcy499vzbz-dprint-0.64.3",
               "default": true
             }
           ],
-          "store_path": "/nix/store/kvqsz0bixydbyhkdkjs73zx9vqnjpzls-dprint-0.64.3"
+          "store_path": "/nix/store/d5a6kni8amzxxi9dhig21aqcy499vzbz-dprint-0.64.3"
         }
       }
     },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
-      "last_modified": "2026-11-03T11:44:38Z",
-      "resolved": "github:NixOS/nixpkgs/ea9e3ef341e11c193537f674f821a99f9f436729?lastModified=1793706278&narHash=sha256-CE1GD35mj%2F%2FAKYuLNbQJZDelQYWzef5GBpQno9uyNP0%3D"
+      "last_modified": "2026-11-21T08:18:15Z",
+      "resolved": "github:NixOS/nixpkgs/93a9ed0a866099a230ed5146a5bb7d16fd5c9b14?lastModified=1795249095&narHash=sha256-8JDgyVvWUZg5m9hNlL8Ge9aT647ng3Ukc8NPMiKNTPQ%3D"
     },
     "trufflehog@3.100.0": {
       "last_modified": "2026-11-21T08:18:15Z",
